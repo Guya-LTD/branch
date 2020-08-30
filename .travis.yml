@@ -1,0 +1,26 @@
+# Config file for automatic testing at travis-ci.org
+
+language: python
+
+python:
+  - 3.7
+
+services:
+  - mongodb
+
+install:
+  #- pip install tox-travis
+  - pip install -r requirements-dev.txt
+
+before_script:
+  - cp .env.example .env
+  - sleep 15
+  - mongo branch_db --eval 'db.createUser({user:"branch_user",pwd:"branch_password",roles:["readWrite"]});'
+
+script:
+  - pytest
+
+after_success:
+  - git config --global user.name "Simonbelete"
+  - git config --global user.email "simonbelete@gmail.com"
+  - semantic-release publish
