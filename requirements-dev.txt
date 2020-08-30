@@ -3,7 +3,6 @@
 
 commitizen
 pre-commit
-python-semantic-release
 faker
 pytest
 pytest-dotenv

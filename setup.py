@@ -10,7 +10,7 @@ from setuptools import setup, find_packages
 import pathlib
 import uuid
 
-from branch import __version__
+#from branch import __version__
 
 try: # for pip >= 10
     from pip._internal.req import parse_requirements
@@ -159,7 +159,7 @@ setup(
     #
     # For an analysis of "install_requires" vs pip's requirements files see:
     # https://packaging.python.org/en/latest/requirements.html
-    install_requires=reqs,  # Optional
+    #install_requires=reqs,  # Optional
 
     # List additional groups of dependencies here (e.g. development
     # dependencies). Users will be able to install these using the "extras"
