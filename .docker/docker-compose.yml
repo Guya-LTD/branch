@@ -1,0 +1,26 @@
+version: '3.7'
+
+networks:
+  branch:
+    driver: ${NETWORKS_DRIVER}
+
+services:
+  mongo:
+    image: branch/mongo
+    container_name: mongo
+    build:
+      context: .
+      dockerfile: ./mongo/Dockerfile
+      args:
+        MONGO_VERSION: ${MONGO_VERSION}
+    environment:
+      - MONGO_INITDB_DATABASE=${DB_NAME}
+      - MONGO_INITDB_ROOT_USERNAME=${DB_ROOT_USERNAME}
+      - MONGO_INITDB_ROOT_PASSWORD=${DB_ROOT_PASSWORD}
+    volumes:
+      - "${SERVICE_DIR}/mongo/data/db:/data/db"
+      - "${SERVICE_DIR}/mongo/init:/docker-entrypoint-initdb.d:ro"
+    ports:
+      - "3000:${MONGO_PORT}"
+    networks:
+      - branch
