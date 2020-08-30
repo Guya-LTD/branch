@@ -42,20 +42,6 @@ class Config:
         before and after changes are committed to the database.
     """
 
-    DEBUG = False
-    
-    TESTING = False
-
-
-class Config:
-    """Class containing the default settings for all environments.
-
-    Constants:
-    ---------
-        SQLALCHEMY_TRACK_MODIFICATIONS (boolean): signals to get notified
-        before and after changes are committed to the database.
-    """
-
     load_dotenv()
 
     DEBUG = False

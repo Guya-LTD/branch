@@ -16,15 +16,15 @@ LICENSE
 Authors
 -------
     * [Simon Belete](https://github.com/Simonbelete)
- 
+
 Project
 -------
-    * Name: 
+    * Name:
         - Guya E-commerce & Guya Express
     * Sub Project Name:
-        - Branch Service
+        - Cart service for Guya microservices
     * Description
-        - Branch location and details service
+        - Cart mangement service
 """
 
 
@@ -37,38 +37,20 @@ Application features:
     PEP-8 for code style
 
 
-Entity.
+Exception.
 """
 
-from branch.database import db
+from werkzeug.exceptions import BadRequest
 
+class ValueEmpty(BadRequest):
+    """*400* `Bad Request`
 
-class Location(db.EmbeddedDocument):
-    """Embedded document.
-    
-    Attributes
-    ----------
-    woreda : String
-
-    kebele : String
-
-    house_no : String
-
-    gps : PointField
+    Raise if the browser sends something to the application the application
+    or server cannot handle.
     """
+    def __init__(self, description=None, response=None):
+        desc = {'description': 'One of the payload is empty'}
+        if description is not None:
+            desc.update(description)
+        super().__init__(description=desc, response=None)
 
-    NEW = 'new'
-
-    OLD = 'old'
-
-    STATUS = (NEW, OLD)
-
-    woreda = db.StringField()
-
-    kebele = db.StringField()
-
-    house_no = db.StringField()
-
-    gps = db.GeoPointField(auto_index=False) # order = latitude, longtiude
-
-    STATUS = db.StringField(choices = STATUS, default = NEW)

@@ -28,47 +28,14 @@ Project
 """
 
 
-"""Package details
+from flask_restplus import Namespace, fields
 
-Application features:
---------------------
-    Python 3.7
-    Flask
-    PEP-8 for code style
+from branch.blueprint.v1.foo import namespace
 
 
-Entity.
-"""
+class BranchDto:
+    """Request and Respons Data Transfer Object."""
 
-from branch.database import db
+    request = namespace.model('branch_request', {})
 
-
-class Location(db.EmbeddedDocument):
-    """Embedded document.
-    
-    Attributes
-    ----------
-    woreda : String
-
-    kebele : String
-
-    house_no : String
-
-    gps : PointField
-    """
-
-    NEW = 'new'
-
-    OLD = 'old'
-
-    STATUS = (NEW, OLD)
-
-    woreda = db.StringField()
-
-    kebele = db.StringField()
-
-    house_no = db.StringField()
-
-    gps = db.GeoPointField(auto_index=False) # order = latitude, longtiude
-
-    STATUS = db.StringField(choices = STATUS, default = NEW)
+    response = namespace.model('branch_response', {})

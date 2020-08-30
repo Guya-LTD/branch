@@ -88,7 +88,7 @@ def create_app(test_config: dict = {}) -> Flask:
 
     init_database(app)
     init_blueprints(app)
-
+    
     return app
 
 

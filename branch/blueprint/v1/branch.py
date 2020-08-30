@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """Copyright Header Details
 
 Copyright
@@ -37,38 +35,14 @@ Application features:
     PEP-8 for code style
 
 
-Entity.
+Blueprint to organize and group, views related
+to the '/branches' endpoint of HTTP REST API.
 """
 
-from branch.database import db
+from flask_restplus import Namespace
 
+from . import api
 
-class Location(db.EmbeddedDocument):
-    """Embedded document.
-    
-    Attributes
-    ----------
-    woreda : String
+namespace = Namespace('Branch', description = 'Branch REST API')
 
-    kebele : String
-
-    house_no : String
-
-    gps : PointField
-    """
-
-    NEW = 'new'
-
-    OLD = 'old'
-
-    STATUS = (NEW, OLD)
-
-    woreda = db.StringField()
-
-    kebele = db.StringField()
-
-    house_no = db.StringField()
-
-    gps = db.GeoPointField(auto_index=False) # order = latitude, longtiude
-
-    STATUS = db.StringField(choices = STATUS, default = NEW)
+api.add_namespace(namespace, path = '/branches')
