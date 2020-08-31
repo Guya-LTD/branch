@@ -114,7 +114,8 @@ Functions:
 
 """
 
-
+import ast
+from flask import request, jsonify
 from flask_restplus import Resource
 
 from branch.dto.branch_dto import BranchDto
@@ -211,6 +212,8 @@ class BranchesResource(Resource):
 
     """
 
+     _LIMIT = 10
+
     def get(self):
         """Get All/Semi datas from database
 
@@ -225,6 +228,46 @@ class BranchesResource(Resource):
             Json Dictionaries
 
         """
+
+        page = int(request.args.get('page', 1))
+
+        limit = int(request.args.get('limit', self._LIMIT))
+
+        filters = {}
+
+        for key in request.args:
+            if key not in ['page', 'limit', 'sort_by', 'order_by']:  key=ge:abc
+                splited = request.args.get(key).split(':')
+                value = splited[1]
+                try: 
+                    value = ast.literal_eval(value)
+                except ValueError:
+                    pass 
+
+                filters[key] = {'$%s' % splited[0] :  value}
+
+        branches = Category.objects(__raw__ = filters).order_by(order_by).paginate( page = page, per_page = limit).items
+
+        # Return must always include the global fileds :
+        # Field           Datatype        Default         Description             Examples
+        # -----           --------        -------         -----------             --------
+        # code            int             201             1xx, 2xx, 3xx, 5xx
+        # description     string          Created         http code description
+        # messages        array           Null            any type of messages
+        # errors          array           Null            occured errors
+        # warnings        array           Null            can be url format
+        # datas           array/json      Null            results                 [ {Row 1}, {Row 2}, {Row 3}]
+        return make_response(jsonify({
+            'code': 200,
+            'description': 'Ok',
+            'message': '',
+            'errors': [],
+            'warnings': [],
+            'datas': branches,
+            'page': page,
+            'limit': limit
+            'total': Branche.objects.count()
+        }), 200)
 
 
     @namespace.expect(BranchDto.request, validate = True)
@@ -383,6 +426,42 @@ class BrancheResource(Resource):
             Json Dictionaries
 
         """
+
+        # start by validating request fields for extra security
+        # step 1 validation: strip payloads for empty string
+        if not id.strip():
+           raise ValueEmpty({'payloads': {'id': id}})
+
+        # the query may be filtered by calling the QuerySet object 
+        # with field lookup keyword arguments. The keys in the keyword 
+        # arguments correspond to fields on the Document you are querying
+        branches = Branch.objects(id = id)
+
+         # Return must always include the global fileds :
+        # Field           Datatype        Default         Description             Examples
+        # -----           --------        -------         -----------             --------
+        # code            int             201             1xx, 2xx, 3xx, 5xx
+        # description     string          Created         http code description
+        # messages        array           Null            any type of messages
+        # errors          array           Null            occured errors
+        # warnings        array           Null            can be url format
+        # datas           array/json      Null            results                 [ {Row 1}, {Row 2}, {Row 3}]
+        code = 200
+        description = 'OK'
+
+        if not branches:
+            code = 204
+            description = 'No Content'
+
+        return make_response(jsonify({
+            'code': code,
+            'description': description,
+            'message': '',
+            'errors': [],
+            'warnings': [],
+            'datas': [branches]
+        }), code)
+        
 
 
     @namespace.expect(FooDto.request, validate = True)
