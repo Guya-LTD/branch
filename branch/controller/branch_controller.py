@@ -212,7 +212,7 @@ class BranchesResource(Resource):
 
     """
 
-     _LIMIT = 10
+    _LIMIT = 10
 
     def get(self):
         """Get All/Semi datas from database
