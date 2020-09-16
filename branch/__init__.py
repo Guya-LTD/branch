@@ -54,7 +54,7 @@ from .handlers import register_handler
 from branch.controller.v1 import *
 
 # const vars
-__version__ = '0.3.1'
+__version__ = '0.3.2'
 __email__ = 'simonbelete@gmail.com'
 __title__ = 'Branch Service'
 __author__ = 'Simon Belete'
