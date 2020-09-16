@@ -45,8 +45,7 @@ from flask_mongoengine import MongoEngine
 
 
 # global vars
-db = MongoEngine()
-
+db = MongoEngine() 
 
 def init(app: Flask) -> None:
     """This function initialize the datase ORM/ODM, providing a session

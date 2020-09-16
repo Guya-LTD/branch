@@ -77,7 +77,7 @@ def create_app(test_config: dict = {}) -> Flask:
     -------
         flask.app.Flask: The application instance
     """
-
+    #print(os.environ.get('MONGODB_DB'))
     app = Flask(__name__, instance_relative_config=True)
 
     app.app_context().push()

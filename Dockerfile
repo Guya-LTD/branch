@@ -1,8 +1,11 @@
-FROM python:3.7-alpine
+########################################################
+# Development build                                    #
+########################################################
+FROM python:3.7-slim AS development
 
-# insalling git
-RUN apk update
-RUN apk add git
+# Install git
+RUN apt-get update
+RUN apt-get -y install git
 
 # workdir
 ENV WORK_DIR /usr/src/app
@@ -13,6 +16,32 @@ RUN chmod +x -R ${WORK_DIR}/requirements.txt
 
 RUN pip install -r requirements.txt
 
-COPY . .
+COPY . ./
+
+RUN cp .env.example .env
+
+CMD flask run
+
+EXPOSE 80
+
+########################################################
+# Production environment                               #
+########################################################
+FROM python:3.7-slim AS production
+
+# Install git
+#RUN apt-get update
+#RUN apt-get -y install git
+
+# workdir
+ENV WORK_DIR /usr/src/app
+WORKDIR ${WORK_DIR}
+
+COPY requirements.txt ${WORK_DIR}
+RUN chmod +x -R ${WORK_DIR}/requirements.txt
+
+RUN pip install -r requirements.txt
+
+COPY . ./
 
 CMD python waitress_server.py
