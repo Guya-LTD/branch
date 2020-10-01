@@ -82,7 +82,7 @@ def register_handler(app) -> None:
         resp = jsonify(result)
         resp.status_code = result['code']
         return resp
-
+ 
 
      ## Mongoengine Exception handlers
     def mongoengine_generic_error_handler(error, code = 500):
