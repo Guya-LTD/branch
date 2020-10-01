@@ -115,7 +115,7 @@ Functions:
 """
 
 import ast
-from flask import request, jsonify
+from flask import request, jsonify, make_response
 from flask_restplus import Resource
 
 from branch.dto.branch_dto import BranchDto
@@ -230,13 +230,12 @@ class BranchesResource(Resource):
         """
 
         page = int(request.args.get('page', 1))
-
         limit = int(request.args.get('limit', self._LIMIT))
-
         filters = {}
+        order_by = request.args.get('order_by')
 
         for key in request.args:
-            if key not in ['page', 'limit', 'sort_by', 'order_by']:  key=ge:abc
+            if key not in ['page', 'limit', 'sort_by', 'order_by']:
                 splited = request.args.get(key).split(':')
                 value = splited[1]
                 try: 
@@ -246,7 +245,7 @@ class BranchesResource(Resource):
 
                 filters[key] = {'$%s' % splited[0] :  value}
 
-        branches = Category.objects(__raw__ = filters).order_by(order_by).paginate( page = page, per_page = limit).items
+        branches = Branch.objects(__raw__ = filters).order_by(order_by).paginate( page = page, per_page = limit).items
 
         # Return must always include the global fileds :
         # Field           Datatype        Default         Description             Examples
@@ -258,15 +257,15 @@ class BranchesResource(Resource):
         # warnings        array           Null            can be url format
         # datas           array/json      Null            results                 [ {Row 1}, {Row 2}, {Row 3}]
         return make_response(jsonify({
-            'code': 200,
-            'description': 'Ok',
-            'message': '',
-            'errors': [],
-            'warnings': [],
-            'datas': branches,
-            'page': page,
-            'limit': limit
-            'total': Branche.objects.count()
+            'status_code': 200,
+            'status': 'Ok',
+            'message': 'All Branches',
+            'data': branches,
+            'pagination': {
+                'count': Branch.objects.count(),
+                'limit': limit,
+                'page': page
+            }
         }), 200)
 
 
@@ -287,14 +286,14 @@ class BranchesResource(Resource):
             raise ValueEmpty({'payload': payload})
 
         names = Names(
-            en = namespace.payload['names']['en']
+            en = namespace.payload['names']['en'],
             am = namespace.payload['names']['am']
         )
 
         location = Location(
             woreda = namespace.payload['location']['woreda'],
             kebele = namespace.payload['location']['kebele'],
-            house_no = namespace.payload['location']['house_no']
+            house_no = namespace.payload['location']['house_no'],
             gps = namespace.payload['location']['gps']
         )
 
@@ -329,7 +328,7 @@ class BranchesResource(Resource):
 
 
 
-@namespace.route('')
+@namespace.route('/<string:id>')
 @namespace.response(100, 'Continue')
 @namespace.response(101, 'Switching Protocols')
 @namespace.response(102, 'Processing')
@@ -464,7 +463,7 @@ class BrancheResource(Resource):
         
 
 
-    @namespace.expect(FooDto.request, validate = True)
+    @namespace.expect(BranchDto.request, validate = True)
     def put(self, id):
         """Update a data from database
 

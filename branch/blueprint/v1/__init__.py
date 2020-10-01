@@ -41,8 +41,7 @@ Blueprint to v1 and group, related endpoint of HTTP REST API.
 """
 
 from flask import Blueprint
-from flask_restplus import Api 
-
+from flask_restplus import Api
 
 blueprint = Blueprint('apiv1', __name__)
 

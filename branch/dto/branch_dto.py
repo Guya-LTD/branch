@@ -30,12 +30,28 @@ Project
 
 from flask_restplus import Namespace, fields
 
-from branch.blueprint.v1.foo import namespace
+from branch.blueprint.v1.branch import namespace
 
 
 class BranchDto:
     """Request and Respons Data Transfer Object."""
 
-    request = namespace.model('branch_request', {})
+    Language = namespace.model('Language', {
+        'en': fields.String(required = True),
+        'am': fields.String()
+    })
+
+    Location = namespace.model('Location', {
+        'woreda': fields.String(),
+        'kebele': fields.String(),
+        'house_no': fields.String()
+        #'gps': fields.String()
+    })
+
+    request = namespace.model('branch_request', {
+        'names': fields.Nested(Language),
+        'location': fields.Nested(Location),
+        'manager_id': fields.String()
+    })
 
     response = namespace.model('branch_response', {})

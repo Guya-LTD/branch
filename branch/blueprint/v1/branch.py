@@ -45,4 +45,4 @@ from . import api
 
 namespace = Namespace('Branch', description = 'Branch REST API')
 
-api.add_namespace(namespace, path = '/branches')
+api.add_namespace(namespace, path = '/api/v1/branches')

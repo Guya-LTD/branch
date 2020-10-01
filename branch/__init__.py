@@ -51,7 +51,7 @@ from .config import config_by_name
 from .handlers import register_handler
 
 # import all controllers
-from branch.controller.v1 import *
+from branch.controller.v1 import branch_controller
 
 # const vars
 __version__ = '0.3.5'
