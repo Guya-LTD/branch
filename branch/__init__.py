@@ -62,8 +62,8 @@ __keywords__ = ''
 __repo_name__ = 'Branch Service'
 __description__ = 'Branch location and details service'
 __project_name__ = 'Branch Service'
-
-
+ 
+ 
 def create_app(test_config: dict = {}) -> Flask:
     """This function is responsible to create a Flask instance according
     a previous setting passed from environment. In that process, it also
@@ -91,7 +91,7 @@ def create_app(test_config: dict = {}) -> Flask:
     
     return app
 
-
+ 
 def load_config(app: Flask) -> None:
     """Load the application's config
 

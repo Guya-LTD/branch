@@ -56,12 +56,12 @@ logger = logging.getLogger(__name__)
 
 # logger handler
 logger.addHandler(
-    logstash.LogstashHandler(
-        os.getenv('LOGGING_HOST'),
-        os.getenv('LOGGING_PORT'), 
-        version=1)
+    logstash.TCPLogstashHandler(
+        "logstash-logstash.guya-ltd-elk.svc.cluster.local",
+        5400, 
+        version=1
     )
-
+)
 
 def log_exception(error, extra) -> None:
     # recommanded for production or eithre the logging servier is running
