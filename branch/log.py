@@ -57,8 +57,10 @@ logger = logging.getLogger(__name__)
 # logger handler
 logger.addHandler(
     logstash.TCPLogstashHandler(
-        "logstash-logstash.guya-ltd-elk.svc.cluster.local",
-        5400, 
+        #"logstash-logstash.guya-ltd-elk.svc.cluster.local",
+        #5400, 
+        os.getenv('LOGGING_HOST'),
+        os.getenv('LOGGING_PORT'), 
         version=1
     )
 )
