@@ -48,6 +48,10 @@ class BranchDto:
         #'gps': fields.String()
     })
 
+    Header = namespace.model('Header', {
+        'Authorization': fields.String()
+    }, mask='{Authorization}') 
+
     request = namespace.model('branch_request', {
         'names': fields.Nested(Language),
         'location': fields.Nested(Location),
