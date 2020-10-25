@@ -122,7 +122,7 @@ from branch.dto.branch_dto import BranchDto
 from branch.blueprint.v1.branch import namespace
 from branch.exception import ValueEmpty
 from branch.repository.branch import Branch, Names, Location
-
+from branch.middleware.jwt_auth_middleware import JWTAuthMiddleWare
 
 @namespace.route('')
 @namespace.response(100, 'Continue')
@@ -214,6 +214,7 @@ class BranchesResource(Resource):
 
     _LIMIT = 10
 
+    @namespace.header('Authorization', 'Jwt Token')
     def get(self):
         """Get All/Semi datas from database
 
@@ -228,7 +229,13 @@ class BranchesResource(Resource):
             Json Dictionaries
 
         """
-
+        jwtAuthMiddleWare = JWTAuthMiddleWare(request)
+        auth = jwtAuthMiddleWare.authorize()
+        # If auth is false break and return response to client
+        # Else jwtAuthMiddleWare holds decoded users data
+        if not auth:
+            return jwtAuthMiddleWare.response
+    
         page = int(request.args.get('page', 1))
         limit = int(request.args.get('limit', self._LIMIT))
         filters = {}
@@ -270,6 +277,7 @@ class BranchesResource(Resource):
 
 
     @namespace.expect(BranchDto.request, validate = True)
+    @namespace.header('Authorization')
     def post(self):
         """Save data/datas to database
 
@@ -280,6 +288,13 @@ class BranchesResource(Resource):
             Json Dictionaries
 
         """
+        jwtAuthMiddleWare = JWTAuthMiddleWare(request)
+        auth = jwtAuthMiddleWare.authorize()
+        # If auth is false break and return response to client
+        # Else jwtAuthMiddleWare holds decoded users data
+        if not auth:
+            return jwtAuthMiddleWare.response
+
         # start by validating request fields for extra security
         # step 1 validation: strip payloads for empty string
         if not namespace.payload['names']['en']:
