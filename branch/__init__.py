@@ -57,7 +57,7 @@ from branch.controller.v1 import branch_controller
 from branch.middleware import jwt_auth_middleware
 
 # const vars
-__version__ = '0.3.9'
+__version__ = '0.3.10'
 __email__ = 'simonbelete@gmail.com'
 __title__ = 'Branch Service'
 __author__ = 'Simon Belete'
