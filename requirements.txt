@@ -1,12 +1,12 @@
+wheel
 pathlib
 waitress
-semantic_release
 python-dotenv
 flask
 Flask-Script
 flask-restplus
 werkzeug~=0.16.1
 flask-mongoengine
-python-semantic-release
+requests
 #git+git://github.com/Guya-LTD/python-logstash.git#egg=python-logstash
 https://github.com/Guya-LTD/python-logstash/archive/master.zip
