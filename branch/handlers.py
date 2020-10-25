@@ -113,7 +113,7 @@ def register_handler(app) -> None:
             'error': {
                 'message': str(error),
                 'type': 'mongoengine.errors'
-            }
+            }}
 
         # logg exception
         log_exception(error = error, extra = result)
