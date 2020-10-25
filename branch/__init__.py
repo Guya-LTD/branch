@@ -143,4 +143,5 @@ def init_middlewares(app: Flask) -> None:
 
     # Resiter middlewares
 
-    app.wsgi_app = jwt_auth_middleware.JWTAuthMiddleWare(app.wsgi_app)
+    #app.wsgi_app = jwt_auth_middleware.JWTAuthMiddleWare(app.wsgi_app)
+    pass
