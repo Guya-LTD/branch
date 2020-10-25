@@ -53,6 +53,9 @@ from .handlers import register_handler
 # import all controllers
 from branch.controller.v1 import branch_controller
 
+# import middlewares
+from branch.middleware import jwt_auth_middleware
+
 # const vars
 __version__ = '0.3.9'
 __email__ = 'simonbelete@gmail.com'
@@ -88,6 +91,7 @@ def create_app(test_config: dict = {}) -> Flask:
 
     init_database(app)
     init_blueprints(app)
+    #init_middlewares(app)
     
     return app
 
@@ -128,3 +132,15 @@ def init_blueprints(app: Flask) -> None:
     # register version based blueprint group
 
     app.register_blueprint(blueprint)
+
+def init_middlewares(app: Flask) -> None:
+    """Register list of middlewares
+
+     Parameters:
+    ----------
+        app (flask.app.Flask): The application instance Flask that'll be running
+    """
+
+    # Resiter middlewares
+
+    app.wsgi_app = jwt_auth_middleware.JWTAuthMiddleWare(app.wsgi_app)
