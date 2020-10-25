@@ -52,11 +52,11 @@ class JWTAuthMiddleWare(object):
 
     def __init__(self, request):
         self.endpoint = Endpoint()
-        self.request = request
+        self.request = request 
         self.response = None
         self.user = None
 
-    def authorize(self):
+    def authorize(self): 
         if not self.request.headers.get('Authorization'):
             # No Authorization header not found
             # Return U 401 status code
@@ -80,9 +80,14 @@ class JWTAuthMiddleWare(object):
             )
             # Check if jwt decoding is sucessful
             if gatekeeper_request.status_code == 200:
-                self.user = gatekeeper_request['data']
+                self.user = gatekeeper_request.json()['data']
                 return True
             else:
                 # Decoding Failed
-                self.response = gatekeeper_request
+                self.response =  make_response(jsonify({
+                    'status_code': gatekeeper_request.status_code,
+                    'status': "",
+                    'message': "Jwt Middleware",
+                    'error': {}
+                }), gatekeeper_request.status_code)
                 return False
