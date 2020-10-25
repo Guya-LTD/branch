@@ -34,6 +34,7 @@ Project
 from flask import jsonify
 from pymongo import errors as pymongoErrors
 from werkzeug.exceptions import HTTPException, default_exceptions
+from requests.exceptions import RequestException
 
 from .database import db
 from .log import log_exception
@@ -67,20 +68,26 @@ def register_handler(app) -> None:
         """
         if isinstance(error, HTTPException):
             result = {
-                'code': error.code,
-                'description': error.description,
-                'type': 'HTTPException',
-                'message': str(error)}
+                'status_code': error.code,
+                'status': error.description,
+                'message': "Flask Http Exception",
+                'error': {
+                    'message': str(error),
+                    'type': 'HTTPException'
+                }}
         else:
             result = {
-                'code': 500,
-                'description': 'Internal Server Error',
-                'type': 'Other Exceptions',
-                'message': str(error)}
+                'status_code': 500,
+                'status': 'Internal Server Error',
+                'message': "Flask Http Exception",
+                'error': {
+                    'message': str(error),
+                    'type': 'Exception'
+                }}
 
         log_exception(error = error, extra = result)
         resp = jsonify(result)
-        resp.status_code = result['code']
+        resp.status_code = result['status_code']
         return resp
  
 
@@ -100,15 +107,18 @@ def register_handler(app) -> None:
         """
         # formatting the exception
         result = {
-            'code': 500, 
-            'description': 'Internal Server Error', 
-            'type': 'mongoengine.errors',
-            'message': str(error)}
+            'status_code': 500,
+            'status': 'Internal Server Error',
+            'message': "Mongoengine Exception",
+            'error': {
+                'message': str(error),
+                'type': 'mongoengine.errors'
+            }
 
         # logg exception
         log_exception(error = error, extra = result)
         resp = jsonify(result)
-        resp.status_code = code
+        resp.status_code = 500
         return resp
 
 
@@ -118,7 +128,7 @@ def register_handler(app) -> None:
 
         Parameters:
         ----------
-            error (pymongo.errors): A pymongo.errorys exception object.
+            error (pymongo.errors): A pymongo.errors exception object.
 
         Returns:
         -------
@@ -126,10 +136,13 @@ def register_handler(app) -> None:
         """
         # formatting the exception
         result = {
-            'code': 500, 
-            'description': 'Internal Server Error', 
-            'type': 'pymongo.errors',
-            'message': str(error)}
+            'status_code': 500, 
+            'status': 'Internal Server Error',
+            'message': "PyMongoengine Exception",
+            'error': {
+                'message': str(error),
+                'type': 'pymongo.errors'
+            }}
 
         # logg exception
         log_exception(error = error, extra = result)
@@ -138,6 +151,35 @@ def register_handler(app) -> None:
         return resp
 
     
+    ## requests generic exception handler
+    def requests_generic_error_handler(error):
+        """Deal with requests exceptions.
+
+        Parameters:
+        ----------
+            error (requests.exceptions.RequestException): A requests.exceptions.RequestException exception object.
+
+        Returns:
+        -------
+            A flask response object.
+        """
+        # formatting the exception
+        result = {
+            'status_code': 500, 
+            'status': 'Internal Server Error',
+            'message': "Requests Exception",
+            'error': {
+                'message': str(error),
+                'type': 'requests.exceptions.RequestException'
+            }}
+
+        # logg exception
+        log_exception(error = error, extra = result)
+        resp = jsonify(result)
+        resp.status_code = 500
+        return resp
+
+
     # pymongo handlers
     def pymongo_auto_reconnect_error_handler(error):
         return pymongo_generic_error_handler(error)
@@ -300,3 +342,7 @@ def register_handler(app) -> None:
     app.register_error_handler(db.ValidationError, mongoengine_validation_error_handler)
     app.register_error_handler(db.SaveConditionError, mongoengine_save_condition_error_handler)
     app.register_error_handler(db.DeprecatedError, mongoengine_deprecated_error_handler)
+
+
+    # register requests exceptions
+    app.register_error_handler(RequestException, requests_generic_error_handler)
