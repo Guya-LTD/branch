@@ -68,6 +68,7 @@ class TestBranchRepository:
             house_no = self.faker.building_number(),
             # latitude, longitude
             gps = self.gps
+            sdf
         )
         self.branch = Branch(
             names = self.names,

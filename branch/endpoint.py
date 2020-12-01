@@ -33,7 +33,4 @@ import os
  
 class Endpoint:
     def gatekeeper(self, name):
-        if(os.environ.get('IS_MOCKING')):
-            return 'http://' + os.environ.get('MOCKING_SERVER_URL') + ':' + os.environ.get('MOCKING_SERVER_PORT') + "/api/v1/" + name
-        elif(not os.environ.get('IS_MOCKING')):
-            return 'http://' + os.environ.get('GATEKEEPER_URL') + ':' + os.environ.get('GATEKEEPER_PORT') + "/api/v1/" + name
+        return 'http://' + os.environ.get('GATEKEEPER_URL') + "/api/v1/" + name

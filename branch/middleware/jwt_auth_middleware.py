@@ -42,6 +42,7 @@ responsible for initializing the application according
 to a previous configuration.
 """
 
+import json
 import requests
 from flask import jsonify, make_response
 
@@ -73,11 +74,21 @@ class JWTAuthMiddleWare(object):
                 'Content-type': 'text/json',
                 'Authorization': authorization
             }
-            # Make request to gatekeeper and decode jwt token
-            gatekeeper_request = requests.get(
-                self.endpoint.gatekeeper('sessions/'),
-                headers = headers
-            )
+            try:
+                # Make request to gatekeeper and decode jwt token
+                gatekeeper_request = requests.post(
+                    self.endpoint.gatekeeper('sessions/0'),
+                    headers = headers
+                )
+            except requests.exceptions.ConnectionError as ex:
+                self.response = make_response(jsonify({
+                    "status_code": "500",
+                    "status": "Internal Servier Error",
+                    "message": "Failed to connect to gatekeper service",
+                    "error": str(ex)
+                }), 500)
+                return False
+
             # Check if jwt decoding is sucessful
             if gatekeeper_request.status_code == 200:
                 self.user = gatekeeper_request.json()['data']
@@ -88,6 +99,15 @@ class JWTAuthMiddleWare(object):
                     'status_code': gatekeeper_request.status_code,
                     'status': "",
                     'message': "Jwt Middleware",
-                    'error': {}
+                    'error': {
+                        "requests": {
+                            "gatekeeper": {
+                                "method": "POST",
+                                "endpoint": self.endpoint.gatekeeper('sessions/0'),
+                                "headers": headers,
+                                "content": json.loads(gatekeeper_request.text) #gatekeeper_request.content.json()
+                            }
+                        }
+                    }
                 }), gatekeeper_request.status_code)
                 return False

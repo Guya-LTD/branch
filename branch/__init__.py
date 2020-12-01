@@ -131,7 +131,7 @@ def init_blueprints(app: Flask) -> None:
 
     # register version based blueprint group
 
-    app.register_blueprint(blueprint)
+    app.register_blueprint(blueprint)#, url_prefix="/branch-service")
 
 def init_middlewares(app: Flask) -> None:
     """Register list of middlewares
