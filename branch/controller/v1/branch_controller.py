@@ -229,13 +229,6 @@ class BranchesResource(Resource):
             Json Dictionaries
 
         """
-        jwtAuthMiddleWare = JWTAuthMiddleWare(request)
-        auth = jwtAuthMiddleWare.authorize()
-        # If auth is false break and return response to client
-        # Else jwtAuthMiddleWare holds decoded users data
-        if not auth:
-            return jwtAuthMiddleWare.response
-    
         page = int(request.args.get('page', 1))
         limit = int(request.args.get('limit', self._LIMIT))
         filters = {}
@@ -315,7 +308,8 @@ class BranchesResource(Resource):
         branch = Branch(
             names = names,
             location = location,
-            manager_id = namespace.payload['manager_id']
+            manager_id = namespace.payload['manager_id'],
+            created_by = str(jwtAuthMiddleWare.user["data"]["id"])
         )
 
         branch.save()
@@ -333,11 +327,8 @@ class BranchesResource(Resource):
             # warnings        array           Null            can be url format
             # datas           array/json      Null            results                 [ {Row 1}, {Row 2}, {Row 3}]
             return make_response(jsonify({
-                'code': 201,
-                'description': 'Created',
-                'message': '',
-                'errors': [],
-                'warnings': [],
+                'status_code': 201,
+                'status': 'Created',
                 'datas': namespace.payload
             }), 201)
 
@@ -494,3 +485,21 @@ class BrancheResource(Resource):
             Json Dictionaries
 
         """
+
+    def delete(self, id):
+        # start by validating request fields for extra security
+        # step 1 validation: strip payloads for empty string
+        if not id.strip():
+           raise ValueEmpty({'payloads': {'id': id}})
+
+        # the query may be filtered by calling the QuerySet object 
+        # with field lookup keyword arguments. The keys in the keyword 
+        # arguments correspond to fields on the Document you are querying
+        branches = Branch.objects(id = id).delete()
+
+        return make_response(jsonify({
+            "status_code": 200,
+            "status": "OK",
+            "message": "Branch deleted"
+        }), 200)
+

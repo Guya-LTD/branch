@@ -70,7 +70,7 @@ def register_handler(app) -> None:
             result = {
                 'status_code': error.code,
                 'status': error.description,
-                'message': "Flask Http Exception",
+                'extra_message': "Flask Http Exception",
                 'error': {
                     'message': str(error),
                     'type': 'HTTPException'
@@ -79,7 +79,7 @@ def register_handler(app) -> None:
             result = {
                 'status_code': 500,
                 'status': 'Internal Server Error',
-                'message': "Flask Http Exception",
+                'extra_message': "Flask Http Exception",
                 'error': {
                     'message': str(error),
                     'type': 'Exception'
@@ -109,7 +109,7 @@ def register_handler(app) -> None:
         result = {
             'status_code': 500,
             'status': 'Internal Server Error',
-            'message': "Mongoengine Exception",
+            'extra_message': "Mongoengine Exception",
             'error': {
                 'message': str(error),
                 'type': 'mongoengine.errors'
@@ -138,7 +138,7 @@ def register_handler(app) -> None:
         result = {
             'status_code': 500, 
             'status': 'Internal Server Error',
-            'message': "PyMongoengine Exception",
+            'extra_message': "PyMongoengine Exception",
             'error': {
                 'message': str(error),
                 'type': 'pymongo.errors'
@@ -167,7 +167,7 @@ def register_handler(app) -> None:
         result = {
             'status_code': 500, 
             'status': 'Internal Server Error',
-            'message': "Requests Exception",
+            'extra_message': "Requests Exception",
             'error': {
                 'message': str(error),
                 'type': 'requests.exceptions.RequestException'
