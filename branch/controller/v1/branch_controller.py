@@ -309,6 +309,7 @@ class BranchesResource(Resource):
             names = names,
             location = location,
             manager_id = namespace.payload['manager_id'],
+            company = namespace.payload['company'],
             created_by = str(jwtAuthMiddleWare.user["data"]["id"])
         )
 

@@ -76,6 +76,8 @@ class Branch(db.Document, BranchEntity, TimestampMixin, UserMixin):
 
     STATUS = (OPEN, CLOSED)
 
+    COMPANY = ("shop", "xpress")
+
     names = db.EmbeddedDocumentField(Names)
 
     manager_id = db.StringField()
@@ -83,3 +85,5 @@ class Branch(db.Document, BranchEntity, TimestampMixin, UserMixin):
     status = db.StringField(choices = STATUS)
 
     location = db.EmbeddedDocumentField(Location)
+
+    company = db.StringField(choices = COMPANY)
